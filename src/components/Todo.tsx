@@ -11,8 +11,9 @@ const Container = styled.section`
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+
   height: 100%;
+  transition: height 3s linear;
 `;
 
 const Todo = () => {

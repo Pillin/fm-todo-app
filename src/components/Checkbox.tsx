@@ -18,12 +18,10 @@ const Checkbox = styled.input<{ checked: boolean }>`
     justify-content: center;
     align-items: center;
     border: ${({ checked }) => !checked ? "1px solid #E3E4F1" : "1px solid white"};
-    border-radius: 50%;
-    transition: background 4s linear, border 1s linear;
+    border-radius: 50%;    
+  }
+  &:hover {
 
-    &::hover {
-       border: ${({ checked }) => !checked ? "1px solid transparent" : "1px solid white"};
-    }
   }
 
 `;

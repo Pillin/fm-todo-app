@@ -1,15 +1,16 @@
 import { useReducer, createContext, Dispatch } from "react";
 
-const dispatch = {} as Dispatch<{ type: string, value?: string | number }>;
+const dispatch = {} as Dispatch<{ type: string, value?: any }>;
+
 
 const initialState = {
   list: [{
     id: 1,
-    name: "Jog around the park 3x",
+    name: "Jog around the park 1x",
     completed: true
   }, {
     id: 2,
-    name: "Jog around the park 3x",
+    name: "Jog around the park2x",
     completed: false
   }, {
     id: 3,
@@ -18,7 +19,7 @@ const initialState = {
   }],
   active: [{
     id: 2,
-    name: "Jog around the park 3x",
+    name: "Jog around the park 2x",
     completed: false
   }, {
     id: 3,
@@ -27,14 +28,15 @@ const initialState = {
   }],
   completed: [{
     id: 1,
-    name: "Jog around the park 3x",
+    name: "Jog around the park 1x",
     completed: true
   }],
   filter: "all",
   dispatch
 };
 
-const todoReducer = (state: any, action: { type: string, value?: number | string }) => {
+const todoReducer = (state: any, action: { type: string, value?: any }) => {
+  let { completed, active } = state;
   switch (action.type) {
     case "ALL":
       return {
@@ -53,7 +55,8 @@ const todoReducer = (state: any, action: { type: string, value?: number | string
       };
     case "COMPLETED":
       return {
-        ...state, filter: "completed",
+        ...state,
+        filter: "completed",
         list: state.completed
       };
     case "CLEAR_COMPLETED":
@@ -62,8 +65,30 @@ const todoReducer = (state: any, action: { type: string, value?: number | string
         list: state.list.filter((elem: any) => !elem.completed),
         completed: []
       };
+
+    case "CHANGE_COMPLETED":
+      const changedElem = action.value;
+      active = active.filter((elem: any) => !elem.completed && elem.id !== changedElem.id);
+      completed = completed.filter((elem: any) => elem.completed && elem.id !== changedElem.id)
+
+      changedElem.completed ? completed.push(changedElem) : active.push(changedElem);
+      return {
+        ...state,
+        list: [...active, ...completed],
+        active,
+        completed
+      };
     case "ADD":
-      return state;
+      const elem = {
+        ...action.value, id: new Date().getTime()
+      }
+      elem.completed ? completed.push(elem) : active.push(elem);
+      return {
+        ...state,
+        list: [...active, ...completed],
+        active,
+        completed
+      };
     case "DELETED":
       return {
         ...state,

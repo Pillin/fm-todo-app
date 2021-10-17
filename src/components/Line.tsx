@@ -40,8 +40,9 @@ const Button = styled.button`
 const LineContainer = (props: { completed: boolean, name: string, id: number }) => {
   const [checked, setChecked] = useState(props.completed);
   const { dispatch } = useContext(TodoContext);
-  return <Line key={`line - ${props.id} `} isCompleted={checked}>
+  return <Line key={`line-${props.id}`} isCompleted={checked}>
     <Checkbox onChange={(isChecked: boolean) => {
+      dispatch({ type: "CHANGE_COMPLETED", value: { id: props.id, completed: isChecked, name: props.name } })
       return setChecked(isChecked);
     }} checked={checked} />
     <P>{props.name}</P>

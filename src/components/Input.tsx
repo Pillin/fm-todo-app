@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import styled from "@emotion/styled";
 import Checkbox from "./Checkbox";
+import { TodoContext } from "../flux/Contexts/Todo";
 
 const Container = styled.section`
   width: 100%;
@@ -34,11 +35,27 @@ const Input = styled.input`
 
 
 const Header = () => {
+  const [sentence, setSentence] = useState("");
+  const [checked, setChecked] = useState(false);
+  const { dispatch } = useContext(TodoContext);
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      dispatch({ type: "ADD", value: { name: sentence, completed: checked } });
+      setSentence("");
+      setChecked(false);
+    }
+  }
 
   return <Container>
-    <Checkbox onChange={(isChecked: boolean) => { return; }} checked={false} />
-    <Input placeholder="Create a new todo" />
+    <Checkbox onChange={(isChecked: boolean) => { return setChecked(isChecked); }} checked={checked} />
+    <Input
+      placeholder="Create a new todo"
+      value={sentence}
+      onChange={e => {
+        setSentence(e.target.value);
+      }}
+      onKeyDown={handleKeyDown} />
   </Container>
-}
+};
 
 export default Header;

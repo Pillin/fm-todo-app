@@ -1,22 +1,24 @@
 import { useState, useContext } from "react";
+import { withTheme } from '@emotion/react';
 import styled from "@emotion/styled";
 import { TodoContext } from "../flux/Contexts/Todo"
 import Checkbox from "./Checkbox";
+import { Theme } from "../theme";
 import { P } from "./Typography";
 
-const Line = styled.section<{ isCompleted: boolean }>`
+const Line = styled.section<{ isCompleted: boolean, theme: Theme }>`
   height: 60px;
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 8px 0px;
-  border: 1px solid #E3E4F1;
+  border: ${({ theme }) => `1px solid ${theme.line.border}`};
   border-width: 0px 0px 1px 0px;
   justify-content: flex-start;
 
   > P {
-    color: ${({ isCompleted }) => isCompleted ? "#D1D2DA" : "#494C6B"};
+    color: ${({ isCompleted, theme }) => isCompleted ? theme.line.p.color.noActive : theme.line.p.color.active};
     text-decoration: ${({ isCompleted }) => isCompleted ? "line-through" : "none"};;
     font-size: 18px;
   }
@@ -27,25 +29,23 @@ const Line = styled.section<{ isCompleted: boolean }>`
   }
 `;
 
-
 const Button = styled.button`
   display: none;
   background-color: transparent;
   border: 0px;
   position: absolute;
-  right: 10px;
+  right: 30px;
 `;
 
-
-const LineContainer = (props: { completed: boolean, name: string, id: number }) => {
+const LineContainer = (props: { completed: boolean, name: string, id: number, theme: Theme }) => {
   const [checked, setChecked] = useState(props.completed);
   const { dispatch } = useContext(TodoContext);
-  return <Line key={`line-${props.id}`} isCompleted={checked}>
+  return <Line key={`line-${props.id}`} isCompleted={checked} theme={props.theme}>
     <Checkbox onChange={(isChecked: boolean) => {
       dispatch({ type: "CHANGE_COMPLETED", value: { id: props.id, completed: isChecked, name: props.name } })
       return setChecked(isChecked);
     }} checked={checked} />
-    <P>{props.name}</P>
+    <P theme={props.theme}>{props.name}</P>
     <Button onClick={() => { dispatch({ type: "DELETED", value: props.id }) }}>
       <img src="/images/icon-cross.svg" alt="icon deleted" />
     </Button>
@@ -53,4 +53,4 @@ const LineContainer = (props: { completed: boolean, name: string, id: number }) 
 }
 
 
-export default LineContainer;
+export default withTheme(LineContainer);

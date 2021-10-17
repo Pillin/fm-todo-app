@@ -1,14 +1,17 @@
 import React, { useState, useContext } from "react";
 import styled from "@emotion/styled";
+import { withTheme } from '@emotion/react';
 import Checkbox from "./Checkbox";
 import { TodoContext } from "../flux/Contexts/Todo";
+import { Theme } from "../theme";
 
-const Container = styled.section`
+const Container = styled.section<{ theme: Theme }>`
   width: 100%;
   max-width: 540px;
   height: 64px;
-  background: white;
-  box-shadow: 0px 35px 50px -15px rgba(194, 195, 214, 0.5);
+  min-height: 64px;
+  background: ${({ theme }) => theme.backgroundList};
+  box-shadow: ${({ theme }) => theme.backgroundBoxList};
   border-radius: 5px;
   display: flex;
   flex-direction: row;
@@ -16,7 +19,7 @@ const Container = styled.section`
   margin: 16px 0px;
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ theme: Theme }>`
   width: 100%;
   height: 100%;
   border: 0px;
@@ -26,15 +29,15 @@ const Input = styled.input`
   outline: transparent;
   line-height: 0.25px;
   caret-color: #3A7CFD;
-  color: #393A4B;
+  color: ${({ theme }) => theme.line.input.color};
 
   &:placeholder {
-    color: #9495A5;
+    color: ${({ theme }) => theme.line.input.placeholder};
   }
 `;
 
 
-const Header = () => {
+const Header = (props: { theme: Theme }) => {
   const [sentence, setSentence] = useState("");
   const [checked, setChecked] = useState(false);
   const { dispatch } = useContext(TodoContext);
@@ -46,9 +49,10 @@ const Header = () => {
     }
   }
 
-  return <Container>
+  return <Container theme={props.theme}>
     <Checkbox onChange={(isChecked: boolean) => { return setChecked(isChecked); }} checked={checked} />
     <Input
+      theme={props.theme}
       placeholder="Create a new todo"
       value={sentence}
       onChange={e => {
@@ -58,4 +62,4 @@ const Header = () => {
   </Container>
 };
 
-export default Header;
+export default withTheme(Header);

@@ -1,11 +1,14 @@
 import styled from "@emotion/styled";
+import { Theme } from "../theme";
 
-export const P = styled.p<{ margin?: string }>`
-  color: #9495A5;
+export const P = styled.p<{
+  margin?: string, theme: Theme
+}>`
+  color: ${({ theme }) => theme.typography.p.color};
   margin: ${({ margin }) => margin || "0px"};
   font-weight: 400;
   font-size: 14px;
-  line-heigh:14px;
+  line-heigh: 14px;
 
 `;
 

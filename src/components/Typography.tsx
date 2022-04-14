@@ -1,18 +1,19 @@
 import styled from "@emotion/styled";
+import { motion } from "framer-motion";
 import { Theme } from "../theme";
 
-export const P = styled.p<{
-  margin?: string, theme: Theme
+export const P = styled(motion.p)<{
+  margin?: string;
+  theme: Theme;
 }>`
   color: ${({ theme }) => theme.typography.p.color};
   margin: ${({ margin }) => margin || "0px"};
   font-weight: 400;
   font-size: 14px;
-  line-heigh: 14px;
-
+  line-height: 14px;
 `;
 
-export const H1 = styled.h1`
+export const H1 = styled(motion.h1)`
   color: hsla(0, 0%, 100%, 0.75);
   font-weight: 300;
   margin: 0px;

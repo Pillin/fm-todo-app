@@ -1,12 +1,13 @@
 import { useState, useContext } from "react";
-import { withTheme } from '@emotion/react';
+import { withTheme } from "@emotion/react";
 import styled from "@emotion/styled";
-import { TodoContext } from "../flux/Contexts/Todo"
+import { motion } from "framer-motion";
+import { TodoContext } from "../flux/Contexts/Todo";
 import Checkbox from "./Checkbox";
 import { Theme } from "../theme";
 import { P } from "./Typography";
 
-const Line = styled.section<{ isCompleted: boolean, theme: Theme }>`
+const Line = styled(motion.section)<{ isCompleted: boolean; theme: Theme }>`
   height: 60px;
   width: 100%;
   display: flex;
@@ -18,8 +19,10 @@ const Line = styled.section<{ isCompleted: boolean, theme: Theme }>`
   justify-content: flex-start;
 
   > P {
-    color: ${({ isCompleted, theme }) => isCompleted ? theme.line.p.color.noActive : theme.line.p.color.active};
-    text-decoration: ${({ isCompleted }) => isCompleted ? "line-through" : "none"};;
+    color: ${({ isCompleted, theme }) =>
+      isCompleted ? theme.line.p.color.noActive : theme.line.p.color.active};
+    text-decoration: ${({ isCompleted }) =>
+      isCompleted ? "line-through" : "none"};
     font-size: 18px;
   }
   &:hover {
@@ -29,7 +32,7 @@ const Line = styled.section<{ isCompleted: boolean, theme: Theme }>`
   }
 `;
 
-const Button = styled.button`
+const Button = styled(motion.button)`
   display: none;
   background-color: transparent;
   border: 0px;
@@ -37,20 +40,50 @@ const Button = styled.button`
   right: 30px;
 `;
 
-const LineContainer = (props: { completed: boolean, name: string, id: number, theme: Theme }) => {
+const LineContainer = (props: {
+  completed: boolean;
+  name: string;
+  id: number;
+  theme: Theme;
+  variants: any;
+  exit: string;
+  animate: string;
+  initial: string;
+}) => {
   const [checked, setChecked] = useState(props.completed);
   const { dispatch } = useContext(TodoContext);
-  return <Line key={`line-${props.id}`} isCompleted={checked} theme={props.theme}>
-    <Checkbox onChange={(isChecked: boolean) => {
-      dispatch({ type: "CHANGE_COMPLETED", value: { id: props.id, completed: isChecked, name: props.name } })
-      return setChecked(isChecked);
-    }} checked={checked} />
-    <P theme={props.theme}>{props.name}</P>
-    <Button onClick={() => { dispatch({ type: "DELETED", value: props.id }) }}>
-      <img src="/images/icon-cross.svg" alt="icon deleted" />
-    </Button>
-  </Line>
-}
-
+  return (
+    <Line
+      animate={"visible"}
+      variants={props.variants}
+      exit={props.exit}
+      initial={"visible"}
+      layoutId={`line-${props.id}`}
+      key={`line-${props.id}`}
+      isCompleted={checked}
+      theme={props.theme}
+    >
+      <Checkbox
+        onChange={(isChecked: boolean) => {
+          dispatch({
+            type: "CHANGE_COMPLETED",
+            value: { id: props.id, completed: isChecked, name: props.name }
+          });
+          return setChecked(isChecked);
+        }}
+        checked={checked}
+      />
+      <P theme={props.theme}>{props.name}</P>
+      <Button
+        whileHover={{ scale: 1.2 }}
+        onClick={() => {
+          dispatch({ type: "DELETED", value: props.id });
+        }}
+      >
+        <img src="/images/icon-cross.svg" alt="icon deleted" />
+      </Button>
+    </Line>
+  );
+};
 
 export default withTheme(LineContainer);
